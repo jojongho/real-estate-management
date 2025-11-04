@@ -1,0 +1,196 @@
+# 아파트 매물관리 자동화 시스템 설정 파일
+
+# 프로젝트 기본 정보
+project:
+  name: "아파트 매물관리 자동화 시스템"
+  version: "1.0.0"
+  author: "cao25"
+  description: "Google Sheets 기반 매물관리 및 자동 데이터 수집/분석 시스템"
+
+# Google Sheets 설정
+google_sheets:
+  spreadsheet_id: "1tkDKc7RTCLRgYPM-6e3CFEBOsHckLlNmddfKlVUX2rQ"
+  credentials_file: "config/credentials.json"
+  scopes:
+    - "https://www.googleapis.com/auth/spreadsheets"
+    - "https://www.googleapis.com/auth/drive"
+  sheets:
+    register_search: "등록검색"
+    property_db: "매물DB"
+    customer_db: "고객DB"
+    apartment_complex: "아파트단지"
+    fixed_values: "고정값"
+    dashboard: "대시보드"
+
+# 데이터베이스 구조 정의
+database_schema:
+  # 매물DB 컬럼 순서 및 타입
+  property_fields:
+    - name: "단지명"
+      type: "string"
+      required: true
+    - name: "동"
+      type: "int"
+      required: true
+    - name: "호"
+      type: "int"
+      required: true
+    - name: "타입"
+      type: "string"
+      required: true
+    - name: "거래유형"
+      type: "string"
+      required: true
+      options: ["매매", "전세", "월세"]
+    - name: "매매가"
+      type: "int"
+      required: false
+    - name: "보증금"
+      type: "int"
+      required: false
+    - name: "월세"
+      type: "int"
+      required: false
+    - name: "거래상태"
+      type: "string"
+      required: true
+      options: ["계약가능", "계약완료", "보류", "접수"]
+    - name: "매물ID"
+      type: "string"
+      required: false
+      auto_generate: true
+  
+  # 고객DB 컬럼 순서 및 타입
+  customer_fields:
+    - name: "고객ID"
+      type: "string"
+      required: true
+      auto_generate: true
+    - name: "성"
+      type: "string"
+      required: true
+    - name: "연락처"
+      type: "string"
+      required: true
+    - name: "거래카타고리"
+      type: "string"
+      options: ["매도인", "손님"]
+    - name: "관심지역"
+      type: "string"
+    - name: "상담이력"
+      type: "text"
+
+# 데이터 수집 설정
+data_collection:
+  # CSV 파싱 설정
+  csv_import:
+    raw_data_dir: "data/raw"
+    processed_data_dir: "data/processed"
+    supported_encodings: ["utf-8", "cp949", "euc-kr"]
+    max_file_size_mb: 50
+  
+  # PDF 파싱 설정
+  pdf_parsing:
+    patterns:
+      apartment_name: "(.+?)\\s*입주자모집공고"
+      total_units: "총\\s*(\\d+)\\s*세대"
+      move_in_date: "입주예정\\s*(\\d{4}년\\s*\\d{1,2}월)"
+    
+  # 웹 크롤링 설정
+  web_scraping:
+    naver_realestate:
+      base_url: "https://new.land.naver.com"
+      timeout_seconds: 30
+      retry_count: 3
+      delay_between_requests: 2
+
+# API 설정
+api_config:
+  naver:
+    client_id_key: "NAVER_CLIENT_ID"
+    client_secret_key: "NAVER_CLIENT_SECRET"
+  
+  gemini:
+    api_key_key: "GEMINI_API_KEY"
+    model: "gemini-pro"
+  
+  molit:
+    api_key_key: "MOLIT_API_KEY"
+    base_url: "http://openapi.molit.go.kr"
+
+# 자동화 스케줄 설정
+automation_schedule:
+  daily_briefing:
+    hour: 9  # 오전 9시
+    enabled: true
+  
+  data_collection:
+    csv_import:
+      enabled: false  # 수동 실행
+    pdf_parsing:
+      enabled: false  # 수동 실행
+    naver_crawling:
+      enabled: false  # 수동 실행
+    api_sync:
+      enabled: true
+      schedule: "daily"
+      hour: 3  # 새벽 3시
+
+# 콘텐츠 생성 설정
+content_generation:
+  daily_briefing:
+    template: "daily_briefing_template.md"
+    include_charts: true
+    recipients: []  # 이메일 주소 목록
+  
+  marketing_content:
+    gemini_enabled: true
+    max_title_length: 20
+    max_description_length: 150
+    hashtag_count: 5
+  
+  instagram_images:
+    width: 1080
+    height: 1080
+    font_family: "NanumGothic"
+    auto_generate: false
+
+# 로깅 설정
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  console_output: true
+  file_output: true
+  log_directory: "logs"
+  max_file_size: "10MB"
+  retention_days: 30
+
+# 성능 설정
+performance:
+  batch_size: 100  # 한 번에 처리할 레코드 수
+  max_concurrent_requests: 5
+  cache_size: 1000
+  request_timeout: 30
+
+# 알림 설정
+notifications:
+  slack:
+    enabled: false
+    webhook_url: ""
+  
+  email:
+    enabled: false
+    smtp_server: ""
+    username: ""
+    password: ""
+
+# 보안 설정
+security:
+  encrypt_sensitive_data: false
+  api_key_rotation_days: 0
+  audit_logging: true
+
+# 개발/테스트 설정
+development:
+  debug_mode: false
+  mock_data: false
+  test_email_domain: "@example.com"

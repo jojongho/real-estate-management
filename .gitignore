@@ -1,0 +1,108 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Credentials & Secrets
+config/credentials.json
+config/oauth_credentials.json
+config/oauth_credentials.json.backup.*
+config/token.json
+config/token.json.backup.*
+.env
+*.pem
+*.key
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+*.swp
+*.swo
+*~
+
+# IDE & Editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+
+# AI Context Files (excluded per CLAUDE.md)
+.claude/
+.cursor/
+CLAUDE.md
+GEMINI.md
+MCP_SETUP_GUIDE.md
+
+# Data files (large binary files)
+data/raw/
+data/processed/
+*.pdf
+*.csv
+*.xlsx
+*.xls
+
+# Test coverage
+htmlcov/
+.coverage
+.coverage.*
+.pytest_cache/
+.tox/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Playwright
+.playwright/
+playwright-report/
+
+# MCP & Browser Extension
+.gemini/
+.playwright-mcp/
+
+# Obsidian (notes)
+.obsidian/
+
+# Serena
+.serena/
+
+# Claudedocs
+claudedocs/
+
+# 매물관리프로젝트 폴더 (legacy)
+매물관리프로젝트/
+
+# OS
+Thumbs.db
+Desktop.ini
