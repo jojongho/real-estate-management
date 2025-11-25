@@ -51,7 +51,8 @@ class DatabaseConfig:
         'customer_db': '고객DB',
         'apartment_complex': '아파트단지',
         'fixed_values': '고정값',
-        'dashboard': '대시보드'
+        'dashboard': '대시보드',
+        'unified_db': '통합DB'
     })
 
 

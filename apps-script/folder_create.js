@@ -801,18 +801,9 @@ function handleFactoryRow_(sheet, rowNum, header) {
 function createApartmentFolderStructure(시군구, 동읍면, 통반리, 지번, 단지명, 동, 호, 타입) {
   const rootFolder = DriveApp.getFolderById(ROOT_FOLDER_IDS['아파트매물']);
 
-  // 1단계: 시군구 폴더 (타지역이면 "타지역/[원본 시군구]" 구조로 생성)
+  // 1단계: 시군구 폴더 (정규화 적용: 지정 지역 외는 "타지역"으로 매핑)
   const normalized시군구 = normalize시군구(시군구);
-  let 시군구Folder;
-  
-  if (is타지역(시군구)) {
-    // 타지역 폴더 생성 후, 그 아래에 원본 시군구 폴더 생성
-    const 타지역Folder = getOrCreateFolder(rootFolder, '타지역');
-    시군구Folder = getOrCreateFolder(타지역Folder, normalized시군구);
-  } else {
-    // 지정된 3개 지역은 루트 폴더 바로 아래에 생성
-    시군구Folder = getOrCreateFolder(rootFolder, normalized시군구);
-  }
+  const 시군구Folder = getOrCreateFolder(rootFolder, normalized시군구);
 
   // 2단계: 동읍면 폴더
   const 동읍면Folder = getOrCreateFolder(시군구Folder, 동읍면);
@@ -849,18 +840,9 @@ function createApartmentFolderStructure(시군구, 동읍면, 통반리, 지번,
 function createTownFolderStructure(시군구, 동읍면, 통반리, 지번, 주택단지, 주택유형, 동, 호, 타입) {
   const rootFolder = DriveApp.getFolderById(ROOT_FOLDER_IDS['주택타운']);
 
-  // 1단계: 시군구 폴더 (타지역이면 "타지역/[원본 시군구]" 구조로 생성)
+  // 1단계: 시군구 폴더 (정규화 적용: 지정 지역 외는 "타지역"으로 매핑)
   const normalized시군구 = normalize시군구(시군구);
-  let 시군구Folder;
-  
-  if (is타지역(시군구)) {
-    // 타지역 폴더 생성 후, 그 아래에 원본 시군구 폴더 생성
-    const 타지역Folder = getOrCreateFolder(rootFolder, '타지역');
-    시군구Folder = getOrCreateFolder(타지역Folder, normalized시군구);
-  } else {
-    // 지정된 3개 지역은 루트 폴더 바로 아래에 생성
-    시군구Folder = getOrCreateFolder(rootFolder, normalized시군구);
-  }
+  const 시군구Folder = getOrCreateFolder(rootFolder, normalized시군구);
 
   // 2단계: 동읍면 폴더
   const 동읍면Folder = getOrCreateFolder(시군구Folder, 동읍면);
@@ -940,18 +922,9 @@ function createBuildingFolderStructure(시군구, 동읍면, 통반리, 지번, 
   
   const rootFolder = DriveApp.getFolderById(ROOT_FOLDER_IDS['건물']);
   
-  // 1단계: 시군구 폴더 (타지역이면 "타지역/[원본 시군구]" 구조로 생성)
+  // 1단계: 시군구 폴더 (정규화 적용)
   const normalized시군구 = normalize시군구(시군구);
-  let 시군구Folder;
-  
-  if (is타지역(시군구)) {
-    // 타지역 폴더 생성 후, 그 아래에 원본 시군구 폴더 생성
-    const 타지역Folder = getOrCreateFolder(rootFolder, '타지역');
-    시군구Folder = getOrCreateFolder(타지역Folder, normalized시군구);
-  } else {
-    // 지정된 3개 지역은 루트 폴더 바로 아래에 생성
-    시군구Folder = getOrCreateFolder(rootFolder, normalized시군구);
-  }
+  const 시군구Folder = getOrCreateFolder(rootFolder, normalized시군구);
   
   // 2단계: 동읍면 폴더
   const 동읍면Folder = getOrCreateFolder(시군구Folder, 동읍면);
@@ -1003,18 +976,9 @@ function createLandFolderStructure(시군구, 동읍면, 통반리, 지번, 토�
   
   const rootFolder = DriveApp.getFolderById(rootFolderId);
   
-  // 1단계: 시군구 폴더 (타지역이면 "타지역/[원본 시군구]" 구조로 생성)
+  // 1단계: 시군구 폴더 (정규화 적용)
   const normalized시군구 = normalize시군구(시군구);
-  let 시군구Folder;
-  
-  if (is타지역(시군구)) {
-    // 타지역 폴더 생성 후, 그 아래에 원본 시군구 폴더 생성
-    const 타지역Folder = getOrCreateFolder(rootFolder, '타지역');
-    시군구Folder = getOrCreateFolder(타지역Folder, normalized시군구);
-  } else {
-    // 지정된 3개 지역은 루트 폴더 바로 아래에 생성
-    시군구Folder = getOrCreateFolder(rootFolder, normalized시군구);
-  }
+  const 시군구Folder = getOrCreateFolder(rootFolder, normalized시군구);
   
   // 2단계: 동읍면 폴더
   const 동읍면Folder = getOrCreateFolder(시군구Folder, 동읍면);
@@ -1047,18 +1011,9 @@ function createFactoryFolderStructure(시군구, 동읍면, 통반리, 지번, �
   
   const rootFolder = DriveApp.getFolderById(rootFolderId);
   
-  // 1단계: 시군구 폴더 (타지역이면 "타지역/[원본 시군구]" 구조로 생성)
+  // 1단계: 시군구 폴더 (정규화 적용)
   const normalized시군구 = normalize시군구(시군구);
-  let 시군구Folder;
-  
-  if (is타지역(시군구)) {
-    // 타지역 폴더 생성 후, 그 아래에 원본 시군구 폴더 생성
-    const 타지역Folder = getOrCreateFolder(rootFolder, '타지역');
-    시군구Folder = getOrCreateFolder(타지역Folder, normalized시군구);
-  } else {
-    // 지정된 3개 지역은 루트 폴더 바로 아래에 생성
-    시군구Folder = getOrCreateFolder(rootFolder, normalized시군구);
-  }
+  const 시군구Folder = getOrCreateFolder(rootFolder, normalized시군구);
   
   // 2단계: 동읍면 폴더
   const 동읍면Folder = getOrCreateFolder(시군구Folder, 동읍면);
@@ -1207,26 +1162,26 @@ function getBuildingInfoFromBuildingSheet_(ss, 건물명) {
  * @return {Folder} - 폴더 객체
  */
 /**
- * 시군구 값 정규화 (공백 처리만, 타지역 매핑 제거)
+ * 시군구 값 정규화 및 타지역 매핑
+ * - 지정된 3개 지역(아산시, 천안시 서북구, 천안시 동남구)은 그대로 사용
+ * - 그 외 모든 지역은 "타지역"으로 매핑
  * - 공백 처리로 중복 폴더 방지
- * - 타지역 매핑은 폴더 생성 함수에서 처리
  */
 function normalize시군구(시군구) {
   if (!시군구) return '';
-  // 연속된 공백을 하나로 만들고 앞뒤 공백 제거
-  return String(시군구).replace(/\s+/g, ' ').trim();
-}
-
-/**
- * 시군구가 타지역인지 확인 (지정된 3개 지역 외)
- * @param {string} 시군구 - 시군구 값
- * @return {boolean} - 타지역이면 true
- */
-function is타지역(시군구) {
-  if (!시군구) return false;
-  var normalized = normalize시군구(시군구);
+  
+  // 공백 정규화 (연속된 공백을 하나로 만들고 앞뒤 공백 제거)
+  var normalized = String(시군구).replace(/\s+/g, ' ').trim();
+  
+  // 지정된 지역 목록
   var allowedRegions = ['아산시', '천안시 서북구', '천안시 동남구'];
-  return allowedRegions.indexOf(normalized) === -1;
+  
+  // 지정된 지역이면 그대로 반환, 아니면 "타지역"으로 매핑
+  if (allowedRegions.indexOf(normalized) !== -1) {
+    return normalized;
+  } else {
+    return '타지역';
+  }
 }
 
 function getOrCreateFolder(parentFolder, folderName) {
@@ -2094,7 +2049,14 @@ function backfillFactorySheet_(sheet) {
 function ensureResultColumnsForRelatedFile_(sheet, headerRow) {
   var header = headerRow || sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
   var sheetName = sheet.getName();
-  
+
+  // ✅ 매물 시트가 아닌 경우 제외 (고객DB, 고정값, 건물정보 등)
+  var excludedSheets = ['고객DB', '고객정보', '고정값', '건물정보', '아파트단지', '매물지도', '대시보드', '통계', '통합DB'];
+  if (excludedSheets.indexOf(sheetName) !== -1) {
+    Logger.log('[' + sheetName + '] 시트는 폴더 관리 대상이 아니므로 건너뜀');
+    return { urlCol: 0, idCol: 0 };
+  }
+
   // 고정 위치 사용 (AppSheet 스키마 충돌 방지)
   var idCol = META_COLUMN_POSITIONS.ID === 'A' ? 1 : columnLetterToIndex_(META_COLUMN_POSITIONS.ID);
   var urlCol = META_COLUMN_POSITIONS.관련파일 === 'B' ? 2 : columnLetterToIndex_(META_COLUMN_POSITIONS.관련파일);
