@@ -1,15 +1,16 @@
 # 🏠 아파트 매물관리 자동화 시스템
 
-> Google Sheets를 중심으로 한 매물관리 및 자동 데이터 수집/분석 시스템
+> 로컬 Excel(OneDrive) 기반 매물관리 및 자동 데이터 수집/분석 시스템  
+> *기존 Google Sheets 플로우는 비활성화하고 Excel을 기본 백엔드로 사용합니다.*
 
 ![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
-![Google Sheets](https://img.shields.io/badge/Google_Sheets-4285F4?logo=google-sheets&logoColor=white)
+![Excel](https://img.shields.io/badge/Excel-217346?logo=microsoft-excel&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Status](https://img.shields.io/badge/status-Development-yellow.svg)
 
 ## 📋 프로젝트 개요
 
-부동산 중개업무의 핵심인 매물 관리를 Google Sheets + Apps Script + Python으로 완전 자동화하는 시스템입니다.
+부동산 중개업무의 핵심인 매물 관리를 OneDrive에 저장된 로컬 Excel + AppSheet + Python으로 자동화하는 시스템입니다.
 
 ### 🎯 주요 목표
 
@@ -19,8 +20,8 @@
 
 ### 💡 핵심 기능
 
-- 📊 **Google Sheets 중앙 관리**: 매물/고객 DB 통합 관리
-- 🤖 **Apps Script 자동화**: 매물 등록/수정/검증 자동화
+- 📊 **로컬 Excel 중앙 관리**: 매물/고객 DB를 OneDrive 경로에 저장해 AppSheet와 동기화
+- 🤖 **Apps Script 자동화**: 매물 등록/수정/검증 자동화 (필요 시)
 - 📥 **데이터 자동 수집**: CSV/PDF/웹 크롤링/API 연동
 - 📝 **콘텐츠 자동 생성**: 일일 브리핑, 마케팅 문구 생성
 - 📈 **분석 및 대시보드**: 실시간 매물 현황 시각화
@@ -42,7 +43,7 @@ apartment-automation/
 │   │   ├── briefing.py         # 일일 브리핑
 │   │   ├── marketing.py        # 마케팅 콘텐츠
 │   │   └── instagram.py        # 인스타그램 이미지
-│   ├── sheets/                  # Google Sheets 연동
+│   ├── sheets/                  # Google Sheets 연동 (현재는 Excel 백엔드로 전환 예정)
 │   │   ├── writer.py           # 데이터 쓰기
 │   │   └── reader.py           # 데이터 읽기
 │   ├── config/                  # 설정 관리
@@ -86,25 +87,30 @@ source venv/bin/activate  # Windows: venv\\Scripts\\activate
 pip install -r requirements.txt
 ```
 
-### 2. Google Sheets 설정
+### 2. 로컬 Excel 백엔드 지정 (기본)
 
-1. **Google Cloud Console**에서 새 프로젝트 생성
-2. **Google Sheets API** 및 **Google Drive API** 활성화
-3. **서비스 계정** 생성 및 JSON 키 파일 다운로드
-4. 키 파일을 `config/credentials.json`으로 저장
-5. 환경 변수 설정:
+1. **Excel 통합 파일 확인**
+   - **파일명**: `매물관리.xlsx` (단일 통합 파일)
+   - **경로**: `D:\OneDrive\00. 부동산업무\01. 매물관리\매물관리.xlsx`
+   - **구성**: 기존 3개 분산 파일을 1개로 통합 완료
+
+2. **환경 변수 설정**
    ```bash
    cp env.example .env
-   # .env 파일 편집하여 실제 값 입력
+   # .env에서 다음 값 확인:
+   # EXCEL_BACKEND=excel
+   # EXCEL_FILE_PATH=D:/OneDrive/00. 부동산업무/01. 매물관리/매물관리.xlsx
    ```
 
-### 3. Apps Script 설정
+### 3. (옵션) Google Sheets 설정
 
-1. Google Sheets에서 **확장프그램 > Apps Script** 열기
-2. 기존 코드를 `apps-script/통합_최종_스크립트.js` 내용으로 교체
-3. 권한 승인 및 저장
+더 이상 기본으로 사용하지 않지만, 필요 시 서비스 계정 키를 `config/credentials.json`에 두고 `GOOGLE_SHEETS_ID`를 설정하면 Sheets 백엔드로도 전환할 수 있습니다.
 
-### 4. 실행
+### 4. Apps Script 설정 (옵션)
+
+기존 Google Sheets 자동화가 필요할 때만 `apps-script/통합_최종_스크립트.js`를 사용해 트리거를 구성합니다.
+
+### 5. 실행
 
 ```bash
 # 개발 모드 실행
@@ -130,11 +136,11 @@ python src/main.py
 ### 데이터 흐름
 
 ```
-등록검색 시트 → Apps Script → 매물DB/고객DB
-                ↓
-          Python 주기적 처리 → 분양가/옵션 시트
-                ↓
-          자동 브리핑 생성 → Google Docs/이메일
+AppSheet 폼 → OneDrive Excel (매물/고객 DB)
+             ↓
+        Python 처리 (CSV/PDF/분석)
+             ↓
+        자동 브리핑/콘텐츠 생성
 ```
 
 ## 🔧 기능별 가이드

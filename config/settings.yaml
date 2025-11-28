@@ -7,6 +7,11 @@ project:
   author: "cao25"
   description: "Google Sheets 기반 매물관리 및 자동 데이터 수집/분석 시스템"
 
+# 로컬 Excel 백엔드 (기본)
+excel:
+  backend: "excel"  # excel | sheets
+  file_path: "D:/OneDrive/00. 부동산업무/01. 매물관리/매물관리.xlsx"
+
 # Google Sheets 설정
 google_sheets:
   spreadsheet_id: "1tkDKc7RTCLRgYPM-6e3CFEBOsHckLlNmddfKlVUX2rQ"

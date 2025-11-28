@@ -2,6 +2,9 @@
 통합DB 구축 모듈
 
 모든 매물DB 시트의 데이터를 통합DB로 수집합니다.
+
+Note: Google Sheets 연동 모듈은 legacy로 이동되었습니다.
+Excel 백엔드로 전환된 경우 ExcelHandler를 사용하세요.
 """
 
 import pandas as pd
@@ -9,24 +12,35 @@ from typing import List, Dict, Any, Optional
 from loguru import logger
 
 from src.config.settings import Settings
-from src.sheets.reader import SheetsReader
-from src.sheets.writer import SheetsWriter
+# Google Sheets 모듈은 legacy로 이동
+# from legacy.google_sheets.sheets.reader import SheetsReader
+# from legacy.google_sheets.sheets.writer import SheetsWriter
+
+# Excel 백엔드 사용 시
+from src.excel_handler import ExcelHandler
 
 
 class UnifiedDBBuilder:
-    """통합DB 구축 클래스"""
-    
+    """통합DB 구축 클래스 (Excel 백엔드)"""
+
     def __init__(self, settings: Settings):
         """
         통합DB 구축 초기화
-        
+
         Args:
             settings: 시스템 설정 객체
         """
         self.settings = settings
-        self.reader = SheetsReader(settings)
-        self.writer = SheetsWriter(settings)
         self.unified_sheet_name = '통합DB'
+
+        # Excel 백엔드 사용
+        if settings.excel.backend == "excel":
+            self.excel_handler = ExcelHandler(settings.excel.file_path)
+            logger.info(f"✅ Excel 백엔드 초기화: {settings.excel.file_path}")
+        else:
+            # Google Sheets 백엔드는 레거시로 이동
+            logger.warning("⚠️ Google Sheets 백엔드는 더 이상 지원되지 않습니다. legacy/google-sheets/ 참조")
+            raise NotImplementedError("Google Sheets 백엔드는 legacy로 이동되었습니다.")
         
         # 시트 타입별 D_ID 컬럼명 매핑
         self.d_id_column_mapping = {
@@ -48,9 +62,12 @@ class UnifiedDBBuilder:
         """
         try:
             logger.info("🔄 통합DB 구축 시작")
-            
-            # 1. 모든 시트 목록 가져오기
-            all_sheets = self.reader.get_all_sheet_names()
+
+            # 1. 모든 시트 목록 가져오기 (Excel)
+            all_sheets = self.excel_handler.get_all_sheet_names()
+            if not all_sheets:
+                logger.error("❌ Excel 파일에서 시트 목록을 가져올 수 없습니다")
+                return False
             logger.info(f"📋 전체 시트 수: {len(all_sheets)}")
             
             # 2. 매물DB 시트 찾기 (매물DB로 끝나는 시트들)
@@ -177,8 +194,8 @@ class UnifiedDBBuilder:
             List[Dict[str, Any]]: 수집된 데이터 리스트
         """
         try:
-            # 시트를 DataFrame으로 읽기
-            df = self.reader.read_sheet_as_dataframe(sheet_name)
+            # 시트를 DataFrame으로 읽기 (Excel)
+            df = self.excel_handler.read_sheet(sheet_name)
             
             if df.empty:
                 logger.warning(f"⚠️ 빈 시트: {sheet_name}")
@@ -369,13 +386,14 @@ class UnifiedDBBuilder:
             column_order = ['ID', '관련파일', '폴더ID', 'D_ID', '주소', '매물유형']
             existing_columns = [col for col in column_order if col in df.columns]
             df = df[existing_columns]
-            
-            # 통합DB 시트에 쓰기
-            success = self.writer.update_sheet_with_dataframe(
+
+
+            # 통합DB 시트에 쓰기 (Excel)
+            self.excel_handler.write_data(
                 sheet_name=self.unified_sheet_name,
-                dataframe=df,
-                clear_existing=True
+                data=df
             )
+            success = True
             
             if success:
                 logger.info(f"✅ 통합DB 시트 업데이트 완료: {len(df)} 행")
@@ -396,12 +414,17 @@ class UnifiedDBBuilder:
         """
         try:
             logger.info("🔄 통합DB 업데이트 시작")
-            
-            # 기존 통합DB 읽기
-            existing_df = self.reader.read_sheet_as_dataframe(self.unified_sheet_name)
-            
+
+            # 기존 통합DB 읽기 (Excel)
+            existing_df = self.excel_handler.read_sheet(self.unified_sheet_name)
+            if existing_df is None:
+                existing_df = pd.DataFrame()
+
             # 모든 매물DB 시트에서 최신 데이터 수집
-            all_sheets = self.reader.get_all_sheet_names()
+            all_sheets = self.excel_handler.get_all_sheet_names()
+            if not all_sheets:
+                logger.error("❌ Excel 파일에서 시트 목록을 가져올 수 없습니다")
+                return False
             property_sheets = self._find_property_sheets(all_sheets)
             
             unified_data = []
@@ -444,13 +467,14 @@ class UnifiedDBBuilder:
                 merged_df = merged_df[existing_columns + other_columns]
             else:
                 merged_df = new_df
-            
-            # 통합DB 시트에 쓰기
-            success = self.writer.update_sheet_with_dataframe(
+
+
+            # 통합DB 시트에 쓰기 (Excel)
+            self.excel_handler.write_data(
                 sheet_name=self.unified_sheet_name,
-                dataframe=merged_df,
-                clear_existing=True
+                data=merged_df
             )
+            success = True
             
             if success:
                 logger.info(f"✅ 통합DB 업데이트 완료: {len(merged_df)} 행")

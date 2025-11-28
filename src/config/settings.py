@@ -41,6 +41,12 @@ class PathsConfig:
     logs_dir: Path
     temp_dir: Path
 
+@dataclass
+class ExcelConfig:
+    """로컬 Excel 백엔드 설정"""
+    file_path: str
+    backend: str = "excel"  # excel | sheets (fallback)
+
 
 @dataclass
 class DatabaseConfig:
@@ -71,7 +77,8 @@ class Settings:
         # 경로 설정
         self._setup_paths()
         
-        # Google Sheets 설정
+        # 백엔드 설정 (기본: Excel)
+        self._setup_excel()
         self._setup_google_sheets()
         
         # API 설정
@@ -96,6 +103,15 @@ class Settings:
             config_dir=project_root / "config",
             logs_dir=project_root / "logs",
             temp_dir=project_root / "temp"
+        )
+
+    def _setup_excel(self):
+        """로컬 Excel 설정"""
+        file_path = os.getenv('EXCEL_FILE_PATH', str(self.paths.project_root / "data" / "local_master.xlsx"))
+        backend = os.getenv('EXCEL_BACKEND', 'excel').lower()
+        self.excel = ExcelConfig(
+            file_path=file_path,
+            backend=backend
         )
         
     def _setup_google_sheets(self):
@@ -147,15 +163,15 @@ class Settings:
         
         for dir_path in dirs:
             dir_path.mkdir(parents=True, exist_ok=True)
-            
+        
     def is_configured(self) -> bool:
         """설정이 완료되었는지 확인"""
-        # 필수 설정 항목들 확인
+        if self.excel.backend == "excel":
+            return bool(self.excel.file_path)
         required_settings = [
             self.google_sheets.spreadsheet_id,
             os.path.exists(self.paths.config_dir / self.google_sheets.credentials_file)
         ]
-        
         return all(required_settings)
         
     def print_config(self):
@@ -166,6 +182,8 @@ class Settings:
         print(f"작성자: {self.author}")
         print(f"{'='*50}")
         print(f"프로젝트 루트: {self.paths.project_root}")
+        print(f"Excel 백엔드: {self.excel.backend}")
+        print(f"Excel 파일: {self.excel.file_path}")
         print(f"Google Sheets ID: {self.google_sheets.spreadsheet_id}")
         print(f"데이터 디렉토리: {self.paths.data_raw_dir}")
         print(f"설정 완료 여부: {'✅' if self.is_configured() else '❌'}")

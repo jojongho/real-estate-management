@@ -1,15 +1,10 @@
 # 아파트 매물관리 자동화 시스템 의존성 (Python 3.9 호환)
 # Core dependencies
-gspread>=5.0.0
 pandas>=1.5.0,<2.1.0
 numpy>=1.21.0,<1.25.0
 requests>=2.28.0
 
 # Google Services
-google-auth>=2.15.0
-google-auth-oauthlib>=1.0.0
-google-auth-httplib2>=0.1.0
-google-api-python-client>=2.80.0
 google-generativeai>=0.3.0
 
 # Data processing
@@ -33,7 +28,6 @@ loguru>=0.6.0
 pydantic>=1.10.0,<2.0.0
 
 # MCP Servers
-mcp-google-sheets
 
 # Development tools
 pytest>=7.0.0
