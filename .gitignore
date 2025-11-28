@@ -58,12 +58,12 @@ tmp/
 *.sublime-workspace
 .DS_Store
 
-# AI Context Files (excluded per CLAUDE.md)
+# AI Context Files
 .claude/
 .cursor/
-CLAUDE.md
-GEMINI.md
-MCP_SETUP_GUIDE.md
+# CLAUDE.md - 프로젝트 컨텍스트 문서로 커밋 필요
+# GEMINI.md
+# MCP_SETUP_GUIDE.md
 
 # Data files (large binary files)
 data/raw/
