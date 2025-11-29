@@ -2,7 +2,7 @@
 """
 아파트 매물관리 자동화 시스템 - 메인 엔트리 포인트
 
-이 시스템은 로컬 Excel을 중심으로 한 매물관리 시스템으로, 다음 기능들을 제공합니다:
+이 시스템은 Google Sheets를 중심으로 한 매물관리 시스템으로, 다음 기능들을 제공합니다:
 - CSV/PDF 데이터 자동 수집 및 처리
 - 네이버 부동산 크롤링
 - 실거래가 API 연동
@@ -11,7 +11,7 @@
 
 Author: cao25
 Created: 2025-01-15
-Updated: 2025-11-28 (Excel 백엔드로 전환)
+Updated: 2025-11-29 (Google Sheets로 롤백)
 """
 
 import os
@@ -26,14 +26,13 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 from src.config.settings import Settings
-from src.excel_handler import ExcelHandler
+from src.sheets.reader import SheetsReader
+from src.sheets.writer import SheetsWriter
 from src.collectors.csv_importer import CSVImporter
 from src.collectors.pdf_parser import PDFParser
 from src.collectors.naver_crawler import NaverCrawler
 from src.collectors.api_client import APIClient
 from src.processors.normalizer import DataNormalizer
-# Google Sheets 관련 모듈은 legacy로 이동
-# from src.sheets.writer import SheetsWriter
 from src.generators.briefing import BriefingGenerator
 from src.generators.marketing import MarketingGenerator
 
@@ -152,20 +151,21 @@ def run_content_generation(settings):
         logger.error(f"❌ 콘텐츠 생성 실패: {e}")
 
 
-def update_excel_database(settings):
-    """Excel 데이터베이스 업데이트"""
-    logger.info("📊 Excel 데이터베이스 업데이트 시작")
+def update_sheets_database(settings):
+    """Google Sheets 데이터베이스 업데이트"""
+    logger.info("📊 Google Sheets 데이터베이스 업데이트 시작")
 
     try:
-        excel_handler = ExcelHandler(settings.excel.file_path)
+        sheets_writer = SheetsWriter(settings)
+        sheets_reader = SheetsReader(settings)
 
         # TODO: 데이터 처리 로직 구현
-        # 예: 처리된 데이터를 Excel 시트에 저장
+        # 예: 처리된 데이터를 Google Sheets에 저장
 
-        logger.info("✅ Excel 데이터베이스 업데이트 완료")
+        logger.info("✅ Google Sheets 데이터베이스 업데이트 완료")
 
     except Exception as e:
-        logger.error(f"❌ Excel 데이터베이스 업데이트 실패: {e}")
+        logger.error(f"❌ Google Sheets 데이터베이스 업데이트 실패: {e}")
 
 
 def main():
@@ -182,8 +182,8 @@ def main():
         # 데이터 처리
         run_data_processing(settings)
 
-        # Excel 데이터베이스 업데이트
-        update_excel_database(settings)
+        # Google Sheets 데이터베이스 업데이트
+        update_sheets_database(settings)
 
         # 콘텐츠 생성
         run_content_generation(settings)

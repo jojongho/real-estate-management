@@ -43,9 +43,9 @@ class PathsConfig:
 
 @dataclass
 class ExcelConfig:
-    """로컬 Excel 백엔드 설정"""
+    """로컬 Excel 백엔드 설정 (현재는 사용 안 함)"""
     file_path: str
-    backend: str = "excel"  # excel | sheets (fallback)
+    backend: str = "sheets"  # sheets | excel (롤백됨: 2025-11-29)
 
 
 @dataclass
@@ -106,9 +106,9 @@ class Settings:
         )
 
     def _setup_excel(self):
-        """로컬 Excel 설정"""
+        """로컬 Excel 설정 (레거시)"""
         file_path = os.getenv('EXCEL_FILE_PATH', str(self.paths.project_root / "data" / "local_master.xlsx"))
-        backend = os.getenv('EXCEL_BACKEND', 'excel').lower()
+        backend = os.getenv('EXCEL_BACKEND', 'sheets').lower()  # 기본값: sheets로 변경
         self.excel = ExcelConfig(
             file_path=file_path,
             backend=backend
@@ -166,13 +166,16 @@ class Settings:
         
     def is_configured(self) -> bool:
         """설정이 완료되었는지 확인"""
-        if self.excel.backend == "excel":
+        if self.excel.backend == "sheets":
+            # Google Sheets 백엔드 확인
+            required_settings = [
+                self.google_sheets.spreadsheet_id,
+                os.path.exists(self.paths.config_dir / self.google_sheets.credentials_file)
+            ]
+            return all(required_settings)
+        else:
+            # Excel 백엔드 확인
             return bool(self.excel.file_path)
-        required_settings = [
-            self.google_sheets.spreadsheet_id,
-            os.path.exists(self.paths.config_dir / self.google_sheets.credentials_file)
-        ]
-        return all(required_settings)
         
     def print_config(self):
         """현재 설정 출력"""
