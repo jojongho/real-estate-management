@@ -246,6 +246,67 @@ pytest --cov=src --cov-report=html
 - **API 키**: 환경 변수로 관리, Git 추적 방지
 - **접근 권한**: Google 계정 기반 권한 관리
 
+## 🌐 Apps Script 웹앱
+
+### WebApp_DongHo (우방아이유쉘 매물접수)
+
+> **배포 URL**: Apps Script 에디터에서 배포 후 Bitly로 단축 권장
+
+**기능:**
+- 동/호 연동 드롭다운 (스프레드시트 데이터 기반)
+- 거래유형 복수선택 (매매/전세/월세) + 조건부 가격 필드
+- 멀티파일 업로드 → Google Drive 저장
+- 이메일 알림 (접수 시 관리자에게 발송)
+
+**설정 정보:**
+| 항목 | 값 |
+|------|---|
+| 스프레드시트 ID | `1TE6OgqqbH8VlswI0uYKAEqr4QLtNW_kRjgG8M9RO9z4` |
+| 데이터 시트 | `분양가` (A:동, B:호, C:타입) |
+| 응답 시트 | `응답` |
+| Drive 폴더 ID | `1xOy10OfqLwnGPq-bLssLxabasck4c6K9` |
+| 알림 이메일 | `jongho137@gmail.com` |
+
+**파일:**
+- `apps-script/WebApp_DongHo_Code.gs` - 서버 코드
+- `apps-script/WebApp_DongHo_Index.html` - 클라이언트 UI
+
+### WebApp_MultiComplex (다중 단지 견적 시스템)
+
+**기능:**
+- 단지/동/호 3단계 On-Demand 선택
+- 분양가 + 옵션 자동 계산
+- 외부 스프레드시트에 응답 저장
+
+**설정 정보:**
+| 항목 | 값 |
+|------|---|
+| 데이터베이스 시트 ID | `1s6i-fFhQgKRSmowMtnmO4dIx-3BpPauMSN1e7hezmEQ` |
+| 응답 시트 ID | `1FZ3AWouL0poEP1NrpaxHsNqF6u26H8hZfefOePEe7sI` |
+
+**파일:**
+- `apps-script/WebApp_MultiComplex_Code.gs`
+- `apps-script/WebApp_MultiComplex_Index.html`
+
+---
+
+## 📝 개발 일지
+
+### 2025-02-02: WebApp_DongHo 완성형 구현
+
+**구현 내용:**
+- Tally Form 스타일 모던 UI
+- 거래유형 체크박스 복수선택 + 조건부 가격 필드 (slideDown 애니메이션)
+- 멀티파일 업로드 (FileReader → base64 → DriveApp)
+- 서브폴더 자동 생성: `{동}동_{호}호_{timestamp}`
+- GmailApp 이메일 알림
+
+**해결한 이슈:**
+- `DriveApp.getFolderById` 권한 오류 → GCP OAuth 설정 + testPermissions 함수로 해결
+- 파일 공유 설정: "링크가 있는 모든 사용자" 보기 권한
+
+---
+
 ## 📚 관련 문서
 
 - [[프로젝트 허브]] - 프로젝트 관리 중심 문서
