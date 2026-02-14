@@ -1,5 +1,9 @@
 # n8n 건축물대장 조회 → Notion 연동 가이드
 
+> ⚠️ 이 문서는 초기 버전입니다.  
+> 최신 버전은 `n8n-building-ledger-api-v2-guide.md` 와
+> `n8n-workflow-building-ledger-api-v2.json`을 사용하세요.
+
 카테고리: 기획안
 요약: 기존 Google Sheets 기반 n8n 워크플로우를 Notion DB로 전환하는 방법. Webhook 버튼 클릭 방식으로 건축물대장 API 조회 후 자동 업데이트.
 날짜: 2026년 1월 30일

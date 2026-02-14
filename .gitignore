@@ -34,6 +34,11 @@ config/oauth_credentials.json
 config/oauth_credentials.json.backup.*
 config/token.json
 config/token.json.backup.*
+projects/*/config/credentials.json
+projects/*/config/oauth_credentials.json
+projects/*/config/oauth_credentials.json.backup.*
+projects/*/config/token.json
+projects/*/config/token.json.backup.*
 .env
 *.pem
 *.key

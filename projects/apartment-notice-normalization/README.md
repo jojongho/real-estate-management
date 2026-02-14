@@ -11,8 +11,8 @@
 ## 🚀 사용 방법
 
 1. **환경 설정**
-   - 상위 폴더의 `.env` 파일에 `GEMINI_API_KEY`가 설정되어 있어야 합니다. (자동 로드됨)
-   - 패키지 설치: `pip install -r requirements.txt`
+   - 프로젝트 폴더(`projects/apartment-notice-normalization`)에 `.env` 파일을 만들고 `GEMINI_API_KEY`를 설정하세요.
+   - 패키지 설치: `make install` (또는 `pip install -r requirements.txt`)
 
 2. **데이터 준비**
    - `data/raw` 폴더에 **입주자모집공고 PDF 파일**을 넣으세요.
@@ -20,7 +20,9 @@
 
 3. **실행**
    ```bash
-   python main.py
+   make run
+   # 또는
+   ./run.sh
    ```
 
 4. **결과 확인**
